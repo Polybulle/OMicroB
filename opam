@@ -1,0 +1,38 @@
+opam-version: "2.0"
+name: "omicrob"
+version: "0.1"
+synopsis: "An OCaml generic
+virtual machine for microcontrollers"
+description: """
+OMicroB is an OCaml virtual machine dedicated at running OCaml programs on
+devices with very limited resources such as AVR Atmega32u4 microcontrollers (2.5
+ko of RAM).
+This tools, steming from the works of OCaPIC (https://github.com/bvaugon/ocapic)
+consists of a generic virtual machine, which can be ported on various
+architectures.
+OMicroB performs multiple static analysis passes in order to reduce the
+generated final executable.
+ """
+maintainer: "Steven Varoumas"
+authors: "Steven Varoumas"
+license: "CeCILL"
+homepage: "https://github.com/stevenvar/OMicroB"
+bug-reports: "https://github.com/stevenvar/OMicroB/issues"
+dev-repo: "git+https://github.com/stevenvar/OMicroB.git"
+depends: [
+  "ocaml" {>= "4.07.0"}
+  "obytelib"
+  "ocamlclean"
+  "ocamlbuild"
+  "conf-gcc"
+  (("conf-avr-gcc" & "conf-avrdude") | "conf-xc32-toolchain" | "conf-arm-gcc")
+]
+build: [
+  ["sed" "-i" "''" "s/#target_avr/target_avr/" "configure"] {conf-avr-gcc:installed & conf-avrdude:installed}
+  ["sed" "-i" "''" "s/#target_pic32/target_pic32/" "configure"] {conf-xc32-toolchain:installed}
+  ["sed" "-i" "''" "s/#target_microbit/target_microbit/" "configure"] {conf-arm-gcc:installed}
+  ["./configure" "-prefix" "%{prefix}%"]
+  [make]
+]
+install:
+  [make "install"]
