@@ -1,6 +1,6 @@
 include etc/Makefile.conf
 
-all: internals $(TARGETS)
+all: internals $(ARCHS)
 
 internals: config
 	$(call compile, lib/extra)
@@ -16,6 +16,9 @@ internals: config
 
 avr: internals
 	$(call compile, targets/avr)
+
+microbit: internals
+	$(call compile, targets/microbit)
 
 pic32: internals
 	$(call compile, targets/pic32)
@@ -114,5 +117,6 @@ clean:
 	$(call clean, lib/extra)
 	$(call clean, targets/avr)
 	$(call clean, targets/pic32)
+	$(call clean, targets/microbit)
 
 .PHONY: all config install uninstall tests clean
